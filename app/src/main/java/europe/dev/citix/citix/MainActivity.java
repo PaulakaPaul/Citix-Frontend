@@ -59,6 +59,7 @@ import java.util.List;
 
 import europe.dev.citix.citix.api.requesthandlers.OnSuccessListHandler;
 import europe.dev.citix.citix.login.EntryActivity;
+import europe.dev.citix.citix.settings.SettingsActivity;
 import europe.dev.citix.citix.utils.ABShape;
 import europe.dev.citix.citix.utils.ABTextUtil;
 
@@ -129,6 +130,10 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        }
+
+        if (id == R.id.logout) {
             startActivity(new Intent(MainActivity.this, EntryActivity.class));
         }
 

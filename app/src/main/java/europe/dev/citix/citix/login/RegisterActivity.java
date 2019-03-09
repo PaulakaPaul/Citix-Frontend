@@ -3,7 +3,10 @@ package europe.dev.citix.citix.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,10 +33,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import europe.dev.citix.citix.CitixApp;
 import europe.dev.citix.citix.R;
+import europe.dev.citix.citix.api.views.EventView;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -63,6 +72,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView goback;
+    private CircleImageView profile;
+    private Bitmap userPhoto;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +97,15 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 return false;
             }
         });
+        goback = findViewById(R.id.textView14);
+        profile = findViewById(R.id.profile_image);
+
+        goback.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -94,6 +117,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        setOnProfileListener();
     }
 
     private void populateAutoComplete() {
@@ -102,6 +126,14 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         }
 
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent home_intent = new Intent(this, EntryActivity.class);
+        startActivity(home_intent);
+        overridePendingTransition(R.anim.animation_enter, R.anim.animation_leave);
+        finish();
     }
 
     private boolean mayRequestContacts() {
@@ -346,6 +378,35 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+    }
+
+    private void setOnProfileListener(){
+        profile.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 0);
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == 0) {
+                    Uri selectedImageUri = data.getData();
+                    // Get the path from the Uri
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    this.userPhoto = bitmap;
+                    profile.setImageBitmap(bitmap);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("FileSelectorActivity", "File select error", e);
         }
     }
 }

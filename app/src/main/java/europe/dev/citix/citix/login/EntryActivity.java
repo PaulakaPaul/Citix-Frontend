@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import europe.dev.citix.citix.EventActivity;
 import europe.dev.citix.citix.MainActivity;
 import europe.dev.citix.citix.R;
 
@@ -26,14 +27,18 @@ public class EntryActivity extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(EntryActivity.this, LoginActivity.class));
+                Intent intent_next = new Intent(EntryActivity.this, LoginActivity.class);
+                startActivity(intent_next);
+                overridePendingTransition(R.anim.animation_enter, R.anim.animation_leave);
             }
         });
 
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(EntryActivity.this, RegisterActivity.class));
+                Intent intent_next = new Intent(EntryActivity.this, RegisterActivity.class);
+                startActivity(intent_next);
+                overridePendingTransition(R.anim.animation_enter, R.anim.animation_leave);
             }
         });
     }

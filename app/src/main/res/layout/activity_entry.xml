@@ -6,35 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".login.EntryActivity">
 
-    <com.flaviofaria.kenburnsview.KenBurnsView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/entryphoto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.github.florent37.diagonallayout.DiagonalLayout
-        android:id="@+id/diagonalLayout"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="100dp"
         android:layout_marginTop="128dp"
-
-        android:background="@android:color/transparent"
-        android:elevation="25dp"
-        app:diagonal_angle="0"
-        app:diagonal_direction="left"
-        app:diagonal_position="bottom"
+        android:elevation="60dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="50"
+        android:background="@drawable/fulltransbg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:elevation="44dp"
+                android:text=" X"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="60dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -42,20 +49,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="3dp"
                 android:layout_marginBottom="8dp"
                 android:elevation="44dp"
-                android:text="C I T I X"
-                android:textColor="@android:color/black"
+                android:text="C I T I"
+                android:textColor="@color/colorPrimary"
                 android:textSize="60dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
-    </com.github.florent37.diagonallayout.DiagonalLayout>
+    </android.support.constraint.ConstraintLayout>
+
+    <com.flaviofaria.kenburnsview.KenBurnsView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+
+        android:src="@drawable/entryphoto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/email_sign_in_button"
@@ -67,6 +83,7 @@
         android:layout_marginEnd="128dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/roundedbutton"
+        android:backgroundTint="#FF2CBB2C"
         android:elevation="15dp"
         android:text="Sign in"
         android:textColor="@android:color/white"
@@ -86,8 +103,9 @@
         android:layout_marginBottom="64dp"
         android:background="@drawable/roundedbutton"
         android:elevation="15dp"
-        android:text="Register"
-        android:textColor="@android:color/white"
+        android:text="Sign up"
+        android:backgroundTint="@android:color/white"
+        android:textColor="@android:color/black"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
