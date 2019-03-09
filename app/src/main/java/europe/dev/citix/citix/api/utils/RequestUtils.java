@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RequestUtils {
@@ -11,7 +12,16 @@ public class RequestUtils {
     private String baseUrl;
 
     public RequestUtils(String baseUrl){
-        this.baseUrl = baseUrl;
+        this.baseUrl = concatEndBackslashIfMissing(baseUrl);
+    }
+
+    public Map<String, String> computeHeader(String auth_token) {
+        HashMap<String, String> header = new HashMap<>();
+
+        if (auth_token != null)
+            header.put("Authorization", "Token " + auth_token);
+
+        return header;
     }
 
     public String getFullUrl(String relativeUrl) {
@@ -19,7 +29,7 @@ public class RequestUtils {
     }
 
     public String getFullUrl(String relativeUrl, Map<?, ?> queryParameters) {
-        String absoluteURL = baseUrl + relativeUrl;
+        String absoluteURL = baseUrl + deleteTrailingBackslashIfExists(relativeUrl);
 
         if(queryParameters == null)
             return absoluteURL;
@@ -29,6 +39,40 @@ public class RequestUtils {
             return absoluteURL;
 
         return absoluteURL + "?" + getQueryStrings(queryParameters);
+    }
+
+    public String getFullUrl(String relativeUrl, long id, Map<?, ?> queryParameters) {
+        relativeUrl = concatEndBackslashIfMissing(relativeUrl);
+        relativeUrl = relativeUrl + id + "/";
+        return getFullUrl(relativeUrl, queryParameters);
+    }
+
+    public String getFullUrl(String relativeUrl, long id) {
+        return getFullUrl(relativeUrl, id, null);
+    }
+
+    public String getIdRelativeUrl(String relativeUrl, long id) {
+        relativeUrl = concatEndBackslashIfMissing(relativeUrl);
+
+        return relativeUrl + id + "/";
+    }
+
+    private String concatEndBackslashIfMissing(String url) {
+        int lastBackslashIndex = url.lastIndexOf("/");
+
+        if (lastBackslashIndex != url.length() - 1)
+            url = url + "/";
+
+        return url;
+    }
+
+    private String deleteTrailingBackslashIfExists(String url) {
+        int indexFirstSlash = url.indexOf("/");
+
+        if (indexFirstSlash == 0)
+            url = url.substring(1);
+
+        return url;
     }
 
     private String getQueryStrings(Map<?, ?> queryParameters) {

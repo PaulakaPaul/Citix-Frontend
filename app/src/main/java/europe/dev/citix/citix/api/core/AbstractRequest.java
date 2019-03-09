@@ -1,95 +1,106 @@
 package europe.dev.citix.citix.api.core;
 
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 import europe.dev.citix.citix.CitixApp;
-import europe.dev.citix.citix.api.requesthandlers.OnSuccessHandler;
-import europe.dev.citix.citix.api.requesthandlers.OnSuccessListHandler;
+import europe.dev.citix.citix.api.requesthandlers.JSONHandler;
+import europe.dev.citix.citix.api.requesthandlers.ObjectHandler;
 import europe.dev.citix.citix.api.utils.RequestUtils;
+import europe.dev.citix.citix.api.utils.Serializer;
 
 abstract public class AbstractRequest {
 
     private String baseUrl;
     private String tag;
-    private RequestUtils mRequestUtils;
 
-    public AbstractRequest(){}
+    protected static RequestUtils mRequestUtils;
+    protected static Serializer serializer;
 
-    public AbstractRequest(String baseUrl, String tag){
+    AbstractRequest(String baseUrl, String tag) {
         this.baseUrl = baseUrl;
         this.tag = tag;
-        this.mRequestUtils = new RequestUtils(baseUrl);}
 
-    public void get(String relativeUrl,
+        if(mRequestUtils == null)
+            mRequestUtils = new RequestUtils(baseUrl);
+
+        if(serializer == null)
+            serializer = new Serializer();
+    }
+
+    protected <T> void get(String relativeUrl,
                     Map<?, ?> queryParams,
                     Map<String, String> header,
                     JSONObject jsonObject,
-                    OnSuccessHandler onSuccessHandler
-    ) {
+                    ObjectHandler<T> objectHandler,
+                    Class<T> type) {
         request(Request.Method.GET, relativeUrl, queryParams, header, jsonObject,
-                onSuccessHandler, null);
+                objectHandler, type);
     }
 
-    public void post(String relativeUrl,
+    protected <T> void post(String relativeUrl,
                      Map<?, ?> queryParams,
                      Map<String, String> header,
                      JSONObject jsonObject,
-                     OnSuccessHandler onSuccessHandler) {
+                     ObjectHandler<T> objectHandler,
+                     Class<T> type) {
         request(Request.Method.POST, relativeUrl, queryParams, header, jsonObject,
-                onSuccessHandler, null);
+                objectHandler, type);
     }
 
-    public void patch(String relativeUrl,
+    protected <T> void patch(String relativeUrl,
                       Map<?, ?> queryParams,
                       Map<String, String> header,
                       JSONObject jsonObject,
-                      OnSuccessHandler onSuccessHandler) {
+                      ObjectHandler<T> objectHandler,
+                      Class<T> type) {
         request(Request.Method.PATCH, relativeUrl, queryParams, header, jsonObject,
-                onSuccessHandler, null);
+                objectHandler, type);
     }
 
-    public void delete(String relativeUrl,
+    protected <T> void delete(String relativeUrl,
                        Map<?, ?> queryParams,
                        Map<String, String> header,
                        JSONObject jsonObject,
-                       OnSuccessHandler onSuccessHandler) {
+                       ObjectHandler<T> objectHandler,
+                       Class<T> type) {
         request(Request.Method.DELETE, relativeUrl, queryParams, header, jsonObject,
-                onSuccessHandler, null);
+                objectHandler, type);
     }
 
 
-
-    private void request(final int mode, final String relativeUrl,
+    private <T> void request(final int mode, final String relativeUrl,
                          final Map<?, ?> queryParams,
                          final Map<String, String> header,
                          final JSONObject body,
-                         final OnSuccessHandler onSuccessHandler,
-                         final OnSuccessListHandler onSuccessListHandler) {
+                         final ObjectHandler<T> objectHandler,
+                         final Class<T> type
+                         ) {
 
-        if(header == null)
-            throw new RuntimeException("Header cannot be null");
+        if (header == null)
+            throw new AssertionError("Header cannot be null");
 
         String url = mRequestUtils.getFullUrl(relativeUrl, queryParams);
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(mode, url, body,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.e("jsonRequestSuccess", response.toString());
-                            if (onSuccessHandler != null)
-                                onSuccessHandler.handle(response);
+
+                        if (objectHandler != null) {
+                            T object = serializer.fromJSON(response, type);
+                            objectHandler.handle(object);
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -100,11 +111,13 @@ abstract public class AbstractRequest {
                         } catch (NullPointerException e) {
                             Log.e("JSONErrorResponse", "Volley failed");
                         }
+
+                        if(objectHandler != null)
+                            objectHandler.handle(null);
                     }
-                })
-        {
+                }) {
             @Override
-            public Map<String, String> getHeaders () throws AuthFailureError {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 return header;
             }
         };
@@ -114,11 +127,15 @@ abstract public class AbstractRequest {
         CitixApp.requestQueue.addToRequestQueue(jsonObjectRequest);
     }
 
-    public void cancelRequests() {
-        CitixApp.requestQueue.cancelRequests(this.tag);
+    protected void postFile(final String relativeUrl,
+                             final Map<?, ?> queryParams,
+                             final Map<String, String> header,
+                             final Map<String, String> body,
+                             final String image,
+                             final JSONHandler JSONHandler) {
     }
 
-
-
-
+    protected void cancelRequests() {
+        CitixApp.requestQueue.cancelRequests(this.tag);
+    }
 }
