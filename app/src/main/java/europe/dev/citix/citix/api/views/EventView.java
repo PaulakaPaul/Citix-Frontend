@@ -13,7 +13,6 @@ import europe.dev.citix.citix.api.requesthandlers.JSONHandler;
 import europe.dev.citix.citix.api.requesthandlers.ObjectHandler;
 
 public class EventView extends RequestCoreWrapper {
-    //TODO: add ID in event
     //TODO: photo logic
 
     private static final String TAG = "events";

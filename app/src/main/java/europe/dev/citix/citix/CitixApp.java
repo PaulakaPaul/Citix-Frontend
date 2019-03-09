@@ -18,20 +18,6 @@ public class CitixApp extends Application {
         requestQueue = RequestQueueSingleton.getInstance(this);
 
         authUtils = new AuthUtils();
-
-//        authUtils.cacheToken(token);
-//
-//        PostEvent Event = new PostEvent("Android", "Android baseEvent", 21.227098f, 45.751753f);
-//        EventReaction eventReaction = new EventReaction(1, true, false, 5);
-//        PostEmailAuth postEmailAuth = new PostEmailAuth("test@gmail.com", "some-pass");
-//
-//        new UserView(token).getAll(new ObjectHandler<ListGetUser>() {
-//            @Override
-//            public void handle(ListGetUser response) {
-//                Log.e("RESPONSE", response.toString());
-//            }
-//        });
-
     }
 
 }

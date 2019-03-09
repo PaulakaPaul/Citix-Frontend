@@ -1,31 +1,46 @@
 package europe.dev.citix.citix.api.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class GetEvent extends BaseEvent {
+    private int id;
 
-    private List<String> photo_urls;
-    private List<EventReaction> user_reactions;
+    @SerializedName("photo_urls")
+    private List<String> photoUrls;
+    @SerializedName("user_reactions")
+    private List<EventReaction> userReactions;
 
-    public GetEvent(String name, String description, float lat, float lng, List<String> photo_urls, List<EventReaction> user_reactions) {
+    public GetEvent(String name, String description, float lat, float lng, int id,
+                    List<String> photoUrls, List<EventReaction> userReactions) {
         super(name, description, lat, lng);
-        this.photo_urls = photo_urls;
-        this.user_reactions = user_reactions;
+        this.id = id;
+        this.photoUrls = photoUrls;
+        this.userReactions = userReactions;
     }
 
-    public List<String> getPhoto_urls() {
-        return photo_urls;
+    public int getId() {
+        return id;
     }
 
-    public void setPhoto_urls(List<String> photo_urls) {
-        this.photo_urls = photo_urls;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public List<EventReaction> getUser_reactions() {
-        return user_reactions;
+    public List<String> getPhotoUrls() {
+        return photoUrls;
     }
 
-    public void setUser_reactions(List<EventReaction> user_reactions) {
-        this.user_reactions = user_reactions;
+    public void setPhotoUrls(List<String> photoUrls) {
+        this.photoUrls = photoUrls;
+    }
+
+    public List<EventReaction> getUserReactions() {
+        return userReactions;
+    }
+
+    public void setUserReactions(List<EventReaction> userReactions) {
+        this.userReactions = userReactions;
     }
 }
